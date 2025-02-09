@@ -30,8 +30,9 @@ jobs:
           push: true
           tags: jusaba/esp32-cli:${{ github.run_number }}
       -
-        name: push tag latest
-        run: |
-          docker images
-          docker tag jusaba/esp32-cli:${{ github.run_number }} jusaba/esp32-cli:latest
-          docker push jusaba/esp32-cli:latest
+        name: Build and push tag latest
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: jusaba/esp32-cli:latest
