@@ -8,3 +8,4 @@
   mv /home/bin/esp32/esp32.ino /home/bin/esp32/"${1}".ino    
   mv /home/bin/esp32/esp32.ino.bin /home/bin/esp32/"${1}".bin
   cd ..
+  
