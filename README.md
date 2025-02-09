@@ -2,7 +2,7 @@
 
 # Programacion de **esp32** con arduino-cli
 
-Esta imagen ha sido creada para compilar un skecth de esp32. Se ha creado para poder implementar compilación automática en Actions para compilar nuevas versiones y distribuirlas a los dispositivos conectados a Serverpic.
+Esta imagen ha sido creada para compilar un sketch de esp32. Se ha creado para poder implementar compilación automática en Actions para compilar nuevas versiones y distribuirlas a los dispositivos conectados a Serverpic.
 
 # Versiones
 
@@ -14,7 +14,7 @@ Esta imagen ha sido creada para compilar un skecth de esp32. Se ha creado para p
 
 ### Pre-requisitos 📋
 ---
-_Al instalar **Arduno-cli** en linux en **/home/bin se crea una estructura de carpetas que tenemos que tener en cuenta para construir la imagen_
+_Al instalar **Arduno-cli** en linux en **/home/bin** se crea una estructura de carpetas que tenemos que tener en cuenta para construir la imagen_
 
 ```
 ├─── root
@@ -31,8 +31,8 @@ _Al instalar **Arduno-cli** en linux en **/home/bin se crea una estructura de ca
 └─── home
        └─── bin
               └─── <WORKDIR>
-```
-**WORKDIR** es el directorio donde esta el **skecth** a compilar y ambos deben tener el mismo nombre_. Teniendo esto en cuenta, a la hora de crear la imagen crearemos el directorio de trabajo con el nombre de **esp32**. A la hora de compilar, depositaremos el **skecht** en ese directorio y lo renombraremos como **esp32.ino**.
+ ```
+**WORKDIR** es el directorio donde esta el **sketch** a compilar y ambos, Directorio y Sketch deben tener el mismo nombre. Teniendo esto en cuenta, a la hora de crear la imagen crearemos el directorio de trabajo con el nombre de **esp32**. A la hora de compilar, depositaremos el **skecht** en ese directorio y lo renombraremos como **esp32.ino**.
 
 Si se necesitan librerias particulares para compilar, deben dejarse antes en un directorio conocido, en nuestro caso las dejaremos en el directorio **Librerias** que crearemos en nuestro directorio de trabajo. Previamente a la compilación, esas librerias se copiaran en **/root/Arduino/Libraries** junto a las librerias **Serverpic**
 
@@ -72,7 +72,7 @@ ENTRYPOINT /bin/bash /home/bin/Compila.sh  $_ino $_fqbn
 
 ```
 
-La imagen esta creada sobre Debian, en primer lugar se instala curl para poder descargar seguidamente **python3** y **arduino-cli**. En el directorio /root/.arduino15/ de la imagen tenemos que incorporar el fichero **arduino-cli.yaml** con la información para descargar los packages de esp32, para eso, debemos dejar en el directorio donde se ejecuta el Dockerfile el fichero **arduino-cli.yaml** con el siguiente contenido
+La imagen esta creada sobre Debian, en primer lugar se instala **curl** para poder descargar seguidamente **python3** y **arduino-cli**. En el directorio /root/.arduino15/ de la imagen tenemos que incorporar el fichero **arduino-cli.yaml** con la información para descargar los packages de esp32, para eso, debemos dejar en el directorio donde se ejecuta el Dockerfile el fichero **arduino-cli.yaml** con el siguiente contenido
 
 ```
 board_manager:
@@ -91,15 +91,17 @@ logging:
 
 ```
 
-Solo contemplamos los packages de esp32 por que son lo que en principio se van a utilizar. Si se necesitaran otros packages, se podria crear una nueva imagen actulizando este fichero. 
+Solo contemplamos los packages de **esp32** por que son lo que en principio se van a utilizar. Si se necesitaran otros packages, se podria crear una nueva imagen actulizando este fichero. 
 
-Luego, creamos el directorio de trabajo que tendra el contenedor en /home/bin. 
+Luego, establecemos el path /home/bin como directorio de trabajo. 
 
 En ese directorio  copiaremos el fichero bash **Compila.sh** que es el que realmente llama al compildaor y que deberemos tener en el diretorio donde se encuentre el Dockerfile para crear la imagen.
 
-Inmediatamente después creamos el directorio **esp32** que usaremos como volumen imagen de la carpeta con el **skecth** a compilar.  
+Inmediatamente después creamos el directorio **esp32** que usaremos como volumen imagen de la carpeta con el **sketch** a compilar.  
 
-Volviewndo a **Compila.sh**, es un bash es muy básico. Para ejecutarlo se le deben pasar dos parametros, el nombre del **skecth** original y el **fqbn** corrspondiente al modelo de esp utilizado. Con estos parametros, el bash,  renombra el **skecth** como **esp32.ino**,  llama al compilador con el **fqbn** que se precisa. Una vez finalizada la compilación se vuelve a poner el nombre origina al **skecth** y al fichero **bin** resultado de la compilación.
+Volviewndo a **Compila.sh**, es un bash es muy básico. Para ejecutarlo se le deben pasar dos parametros, el nombre del **sketch** original y el **fqbn** corrspondiente al modelo de esp utilizado. Con estos parametros, el bash,  renombra el **sketch** como **esp32.ino** y  llama al compilador con el **fqbn** que se precisa. Una vez finalizada la compilación se vuelve a poner el nombre origina al **sketch** y al fichero **bin** resultado de la compilación.
+
+El codigo de Compila.sh es el siguiente
 
 ```
   cd /home/bin/esp32
@@ -113,7 +115,7 @@ Volviewndo a **Compila.sh**, es un bash es muy básico. Para ejecutarlo se le de
   mv /home/bin/esp32/esp32.ino.bin /home/bin/esp32/"${1}".bin
   cd ..
 ```
-Continuando con el **Dockerfile**, una vez copiado el fichero **Compila.bash**, se ejecutan cuatro comandos de arduino-cli para que se creen las estructuras de directorios y se cargen los packages de esp32 y la vesriosn deseada
+Continuando con el **Dockerfile**, una vez copiado el fichero **Compila.sh**, se ejecutan cuatro comandos de arduino-cli para que se creen las estructuras de directorios y se cargen los packages de esp32 y la vesriosn deseada
 
 ```
 RUN arduino-cli lib list
@@ -121,6 +123,8 @@ RUN arduino-cli core update-index
 RUN arduino-cli core install esp32:esp32
 RUN arduino-cli core install esp32:esp32@2.0.11
 ```
+Por último, fijamos la entrada al contenedor con la llamada a **Compila.sh** pasandole los dos parametrosa mencionados.
+
 El Dockerfile lo ejecutamos como es costumbre
 
 ```
@@ -149,9 +153,9 @@ docker push jusaba/esp32_cli:latest
 ```
 ## Ejecutando el compilador ⚙️
 ---
-_Supongamos que estamos en el directorio /home/serverpic y tenemos un programa M5StackDial.ino que queremos compilar y que este programa, ademas de las librerias **serverpic**,   necesita las librerias **AsyncTC**, **ESPAsyncWebServer**, **M5GFX**, **M5Unified**, **esp32-http-update-master**, **DFRobot_SHT20-master**, **M5Dial-master** y **M5Stack** _. En el directorio donde se encuentra el **Skecth** debemos crear una carpeta con el nombre **Librerias** donde dejaremos todas estas librerias exceptuando las de **serverpic** que se usaran las del repositorio **Jusaba/LibreriasServerpic**_
+Supongamos que estamos en el directorio de la máquina local /home/serverpic y tenemos un programa M5StackDial.ino que queremos compilar y que este programa, ademas de las librerias **serverpic**,   necesita las librerias **AsyncTC**, **ESPAsyncWebServer**, **M5GFX**, **M5Unified**, **esp32-http-update-master**, **DFRobot_SHT20-master**, **M5Dial-master** y **M5Stack**. En el directorio  /home/serverpic debemos crear una carpeta con el nombre **Librerias** donde dejaremos todas estas librerias exceptuando las de **serverpic** que se deben descargar  del repositorio **Jusaba/LibreriasServerpic** antes de compilar.
 
-_Supongamos igualmente que vamos a utilizar un M5 Dial que necesita las siguientes caracteeristicas del Esp32_
+Supongamos igualmente que vamos a utilizar un M5 Dial que necesita las siguientes caracteeristicas del Esp32
 
 | Descipcion | Valor |
 | ------ | ------ |
@@ -167,11 +171,11 @@ _fqbn=esp32:esp32:stamp-s3
 
 Ya estamos en disposición de compilar
 
-* Ejecutar el contenedor de la siguiente forma.
+Ejecutar el contenedor de la siguiente forma.
 
 ```
-docker run -v /home/serverpic/Librerias:/root/Arduino/libraries/serverpic  -v /home/serverpic:/home/bin/esp32 --env-file parametros.env  -i jusaba/esp32-cli:latest 
-```
+docker run -v /home/serverpic/Librerias:/root/Arduino/libraries  -v /home/serverpic:/home/bin/esp32 --env-file parametros.env  -i jusaba/esp32-cli:latest 
+``` 
 
 Tras unos minutos de trabajo, en el direcotrio **/home/serverpic** nos encontraremos con el fichero compilado **M5StackDial.bin**
 
@@ -190,7 +194,7 @@ Usamos [SemVer](http://semver.org/) para el versionado. Para todas las versiones
 
 ## Autores ✒️
 
-* **Oscar Salas Mestres** Idea original 
+
 * **Julián Salas Barolome** Desarrollo y documentación
 
 
