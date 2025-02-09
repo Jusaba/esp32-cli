@@ -7,21 +7,16 @@ Esta imagen ha sido creada para compilar un skecth de esp32. Se ha creado para p
 # Versiones
 
 1.0 esp32:esp32@2.0.11
+
     Este **core** admmite STAMP-S3, se ha comprobado que versiones posterires ( en alguna 3.0 ) no admite este procesador por lo que de momento 
     para poder utilizar M5Stack Dial es necesario utilizar el core cargado porque se ha comprobado compatibilidad.
 
-### Instalación 🔧
----
-_Para descargar la imagen_
 
-
-```
-docker push jusaba/esp32_cli:latest
-```
 ### Pre-requisitos 📋
 ---
 _Al instalar **Arduno-cli** en linux en **/home/bin se crea una estructura de carpetas que tenemos que tener en cuenta para construir la imagen_
 
+```
 ├─── root
 │     ├─── Arduino
 │     │       └─── libraries
@@ -36,10 +31,10 @@ _Al instalar **Arduno-cli** en linux en **/home/bin se crea una estructura de ca
 └─── home
        └─── bin
               └─── <WORKDIR>
+```
+**WORKDIR** es el directorio donde esta el **skecth** a compilar y ambos deben tener el mismo nombre_. Teniendo esto en cuenta, a la hora de crear la imagen crearemos el directorio de trabajo con el nombre de **esp32**. A la hora de compilar, depositaremos el **skecht** en ese directorio y lo renombraremos como **esp32.ino**.
 
-_**WORKDIR** es el directorio donde esta el **skecth** a compilar y ambos deben tener el mismo nombre_. Teniendo esto en cuenta, a la hora de crear la imagen crearemos el directorio de trabajo con el nombre de **esp32**. A la hora de compilar, depositaremos el **skecht** en ese directorio y lo renombraremos como **esp32.ino**._
-
-_Si se necesitan librerias particulares para compilar, deben dejarse antes en un directorio conocido, en nuestro caso las dejaremos en el directorio **Librerias** que crearemos en nuestro directorio de trabajo. Previamente a la compilación, esas librerias se copiaran en **/root/Arduino/Libraries** junto a las librerias **Serverpic**_
+Si se necesitan librerias particulares para compilar, deben dejarse antes en un directorio conocido, en nuestro caso las dejaremos en el directorio **Librerias** que crearemos en nuestro directorio de trabajo. Previamente a la compilación, esas librerias se copiaran en **/root/Arduino/Libraries** junto a las librerias **Serverpic**
 
 ## Como se ha construido la imagen 🛠️
 
@@ -144,6 +139,14 @@ Evidentemente, antes debe hacer **login** en **Docker Hub**
 docker login -u "jusaba" -p "<PASSWEORD>" docker.io 
 ```
 
+### Instalación 🔧
+---
+_Para descargar la imagen_
+
+
+```
+docker push jusaba/esp32_cli:latest
+```
 ## Ejecutando el compilador ⚙️
 ---
 _Supongamos que estamos en el directorio /home/serverpic y tenemos un programa M5StackDial.ino que queremos compilar y que este programa, ademas de las librerias **serverpic**,   necesita las librerias **AsyncTC**, **ESPAsyncWebServer**, **M5GFX**, **M5Unified**, **esp32-http-update-master**, **DFRobot_SHT20-master**, **M5Dial-master** y **M5Stack** _. En el directorio donde se encuentra el **Skecth** debemos crear una carpeta con el nombre **Librerias** donde dejaremos todas estas librerias exceptuando las de **serverpic** que se usaran las del repositorio **Jusaba/LibreriasServerpic**_
