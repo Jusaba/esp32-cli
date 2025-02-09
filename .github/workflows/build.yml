@@ -23,9 +23,14 @@ jobs:
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       -
-        name: Build and push
+        name: Build and push tag number build
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
           tags: jusaba/esp32-cli:${{ github.run_number }}
+      -
+        name: push tag latest
+        run: |
+          docker tag jusaba/esp32-cli:${{ github.run_number }} jusaba/esp32-cli:latest
+          docker push jusaba/esp32-cli:latest
