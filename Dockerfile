@@ -22,7 +22,6 @@ RUN cd /home/bin/esp32
 
 RUN arduino-cli lib list
 RUN arduino-cli core update-index
-RUN arduino-cli core install esp32:esp32
 RUN arduino-cli core install esp32:esp32@2.0.11
 
 ENTRYPOINT /bin/bash /home/bin/Compila.sh  $_ino $_fqbn
