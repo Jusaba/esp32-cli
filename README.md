@@ -2,7 +2,7 @@
 
 # Programacion de **esp32** con arduino-cli
 
- Se ha creado para poder implementar compilación automática en Actions para compilar nuevas versiones de un skecthesp32 y distribuirlas a los dispositivos conectados a Serverpic.
+ Esta imagen se ha creado para poder implementar compilación automática en Actions para compilar nuevas versiones de un skecthesp32 y distribuirlas a los dispositivos conectados a Serverpic.
  
  El primer dispositivo añadido al sistema es el M5Dial con un ESP32 STAMP-S3
 
@@ -65,7 +65,6 @@ RUN cd /home/bin/esp32
 
 RUN arduino-cli lib list
 RUN arduino-cli core update-index
-RUN arduino-cli core install esp32:esp32
 RUN arduino-cli core install esp32:esp32@2.0.11
 
 ENTRYPOINT /bin/bash /home/bin/Compila.sh  $_ino $_fqbn
@@ -93,9 +92,9 @@ logging:
 
 Solo contemplamos los packages de **esp32** por que son lo que en principio se van a utilizar. Si se necesitaran otros packages, se podria crear una nueva imagen actulizando este fichero. 
 
-Luego, establecemos el path /home/bin como directorio de trabajo. 
+Luego, establecemos el path **/home/bin** como directorio de trabajo. 
 
-En ese directorio  copiaremos el fichero bash **Compila.sh** que es el que realmente llama al compildaor y que deberemos tener en el diretorio donde se encuentre el Dockerfile para crear la imagen.
+En ese directorio  copiaremos el fichero bash **Compila.sh** que es el que realmente llama al compilador y que deberemos tener en el diretorio donde se encuentre el Dockerfile para crear la imagen.
 
 Inmediatamente después creamos el directorio **esp32** que usaremos como volumen imagen de la carpeta con el **sketch** a compilar.  
 
@@ -123,7 +122,6 @@ Continuando con el **Dockerfile**, una vez copiado el fichero **Compila.sh**, se
 ```
 RUN arduino-cli lib list
 RUN arduino-cli core update-index
-RUN arduino-cli core install esp32:esp32
 RUN arduino-cli core install esp32:esp32@2.0.11
 ```
 Por último, fijamos la entrada al contenedor con la llamada a **Compila.sh** pasandole los dos parametrosa mencionados.
@@ -139,7 +137,7 @@ El Dockerfile lo ejecutamos como es costumbre
 docker image build -t jusaba/esp32_cli:<Tag> .
 ```
 
-Para dubir la imagen a **Docker Hub**
+Para subir la imagen a **Docker Hub**
 
 ```
 docker push jusaba/esp32_cli:<Tag>
@@ -162,7 +160,8 @@ docker push jusaba/esp32_cli:latest
 ## Ejecutando el compilador ⚙️
 ---
 Supongamos que estamos en el directorio de la máquina local /home/serverpic y tenemos un programa M5StackDial.ino que queremos compilar y que este programa, ademas de las librerias **serverpic**,   necesita las librerias **AsyncTC**, **ESPAsyncWebServer**, **M5GFX**, **M5Unified**, **esp32-http-update-master**, **DFRobot_SHT20-master**, **M5Dial-master** y **M5Stack**. 
-Las librerias las dejaremos en  en el directorio  /home/serverpic/Librerias y al ejecutar el contenedor, crearemos un volumen para asociar ese directorio a /root/Arduino/libraries y el directorio de trabajo /home/serverpic, con otro volumen lo asociaremos a /home/bin/esp32.
+
+Las librerias las dejaremos en  en el directorio  **/home/serverpic/Librerias** y al ejecutar el contenedor, crearemos un volumen para asociar ese directorio a **/root/Arduino/libraries** y el directorio de trabajo **/home/serverpic**, con otro volumen lo asociaremos a **/home/bin/esp32**.
 
 Supongamos igualmente que vamos a utilizar un M5 Dial que necesita las siguientes caracteeristicas del Esp32
 
